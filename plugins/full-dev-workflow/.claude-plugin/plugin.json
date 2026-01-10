@@ -6,8 +6,5 @@
     "name": "ISTLegal",
     "email": "dev@istlegal.com"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/RahSwe/ISTLegal"
-  }
+  "repository": "https://github.com/RahSwe/claude-code-full-dev-workflow"
 }
