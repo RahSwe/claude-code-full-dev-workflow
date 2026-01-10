@@ -1,0 +1,35 @@
+{
+  "name": "full-dev-workflow-marketplace",
+  "owner": {
+    "name": "ISTLegal",
+    "email": "dev@istlegal.com"
+  },
+  "metadata": {
+    "description": "Claude Code plugins for comprehensive feature development workflows",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "full-dev-workflow",
+      "source": "./plugins/full-dev-workflow",
+      "description": "Complete feature development workflow with code mapping, TDD, multi-agent review, UI verification, PR management, and state persistence",
+      "version": "1.0.0",
+      "author": {
+        "name": "ISTLegal",
+        "email": "dev@istlegal.com"
+      },
+      "homepage": "https://github.com/RahSwe/claude-code-full-dev-workflow",
+      "repository": "https://github.com/RahSwe/claude-code-full-dev-workflow",
+      "license": "MIT",
+      "keywords": [
+        "development-workflow",
+        "tdd",
+        "code-review",
+        "multi-agent",
+        "pr-management",
+        "feature-development"
+      ],
+      "category": "development"
+    }
+  ]
+}

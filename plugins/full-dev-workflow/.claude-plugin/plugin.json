@@ -1,0 +1,13 @@
+{
+  "name": "full-dev-workflow",
+  "description": "Complete feature development workflow with code mapping, TDD, multi-agent review, UI verification, PR management, and state persistence for resume capability",
+  "version": "1.0.0",
+  "author": {
+    "name": "ISTLegal",
+    "email": "dev@istlegal.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RahSwe/ISTLegal"
+  }
+}
