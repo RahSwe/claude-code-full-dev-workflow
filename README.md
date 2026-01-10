@@ -59,6 +59,8 @@ This plugin works best with:
 - [ralph-loop](https://github.com/RahSwe/claude-code-ralph-loop) - For Phase 3 iterative development
 - [code-simplifier](https://github.com/RahSwe/claude-code-code-simplifier) - For Phase 7 code cleanup
 
+And automatic code review in GitHub on published PR's and changes (Claude Code Review, CodeRabbit, Greptile etc)
+
 ## Quick Start
 
 ```bash
