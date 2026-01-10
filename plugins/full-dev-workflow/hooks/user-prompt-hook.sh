@@ -19,8 +19,8 @@ if [[ ! -f "$STATE_FILE" ]]; then
   exit 0
 fi
 
-# Parse user message from hook input
-USER_MESSAGE=$(echo "$HOOK_INPUT" | jq -r '.message // empty' 2>/dev/null || echo "")
+# Parse user message from hook input (field is user_prompt for UserPromptSubmit events)
+USER_MESSAGE=$(echo "$HOOK_INPUT" | jq -r '.user_prompt // .message // empty' 2>/dev/null || echo "")
 
 # Exit if no message
 if [[ -z "$USER_MESSAGE" ]]; then

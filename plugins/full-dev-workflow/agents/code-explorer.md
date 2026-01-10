@@ -1,8 +1,28 @@
 ---
 name: code-explorer
-description: Deeply analyzes codebase features by tracing execution paths, mapping architecture, and identifying patterns. Use when exploring existing code before implementing new features.
+description: Use this agent when you need to deeply understand existing code before making changes. Examples:
+
+  <example>
+  Context: Starting Phase 1 of full-dev workflow to map affected code
+  user: "Implement user authentication feature"
+  assistant: "I'll launch the code-explorer agent to map the existing authentication-related code and identify integration points."
+  <commentary>
+  The code-explorer agent traces execution paths and finds all files relevant to a feature area.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Need to understand how an existing feature works before modifying it
+  user: "Add rate limiting to the API"
+  assistant: "Let me use the code-explorer agent to understand the current API structure and find where rate limiting should be added."
+  <commentary>
+  Use code-explorer for deep architectural understanding rather than simple file searches.
+  </commentary>
+  </example>
+
 tools: Read, Grep, Glob, Bash
 model: sonnet
+color: cyan
 ---
 
 # Code Explorer Agent

@@ -1,8 +1,28 @@
 ---
 name: reviewer-performance
-description: Reviews code for performance issues and scalability concerns. Use during code review phase.
+description: Use this agent when reviewing code for performance issues and scalability concerns. Examples:
+
+  <example>
+  Context: Phase 4 multi-agent code review
+  user: "Review the database query implementation"
+  assistant: "I'll launch the reviewer-performance agent to check for N+1 queries, missing indexes, and scalability issues."
+  <commentary>
+  The reviewer-performance agent identifies code that will cause slowness at scale.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Slow feature reported
+  user: "The dashboard is loading slowly"
+  assistant: "Let me use the reviewer-performance agent to analyze the dashboard code for inefficient algorithms and unnecessary re-renders."
+  <commentary>
+  Use reviewer-performance for optimization opportunities and scalability concerns.
+  </commentary>
+  </example>
+
 tools: Read, Grep, Glob
 model: sonnet
+color: yellow
 ---
 
 # Performance Reviewer

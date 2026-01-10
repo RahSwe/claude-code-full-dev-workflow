@@ -1,8 +1,28 @@
 ---
 name: test-architect
-description: Designs comprehensive test strategies for new features, covering E2E, integration, and unit tests. Use before implementing to establish TDD foundation.
+description: Use this agent when you need to design a comprehensive test strategy before implementation (TDD). Examples:
+
+  <example>
+  Context: Starting Phase 2 of full-dev workflow to create tests
+  user: "Implement checkout flow"
+  assistant: "I'll launch the test-architect agent to design a complete test strategy covering E2E, integration, and unit tests before we start coding."
+  <commentary>
+  The test-architect agent analyzes existing test infrastructure and designs a layered testing approach.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Need to establish test coverage for a complex feature
+  user: "Add payment processing"
+  assistant: "Let me use the test-architect agent to design tests that cover happy paths, error scenarios, and edge cases."
+  <commentary>
+  Use test-architect before implementation to follow TDD principles and ensure comprehensive coverage.
+  </commentary>
+  </example>
+
 tools: Read, Grep, Glob, Bash
 model: sonnet
+color: green
 ---
 
 # Test Architect Agent

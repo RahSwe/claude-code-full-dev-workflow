@@ -1,8 +1,28 @@
 ---
 name: reviewer-quality
-description: Reviews code for quality, DRY principles, readability, and maintainability. Use during code review phase.
+description: Use this agent when reviewing code for quality, DRY principles, readability, and maintainability. Examples:
+
+  <example>
+  Context: Phase 4 multi-agent code review
+  user: "Review the new data processing module"
+  assistant: "I'll launch the reviewer-quality agent to check for code duplication, excessive complexity, and maintainability issues."
+  <commentary>
+  The reviewer-quality agent focuses on clean code principles, not bugs or security issues.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Refactoring consideration
+  user: "This code feels messy, can you review it?"
+  assistant: "Let me use the reviewer-quality agent to identify DRY violations, naming issues, and opportunities for simplification."
+  <commentary>
+  Use reviewer-quality for maintainability concerns, not functional correctness.
+  </commentary>
+  </example>
+
 tools: Read, Grep, Glob
 model: sonnet
+color: yellow
 ---
 
 # Code Quality Reviewer

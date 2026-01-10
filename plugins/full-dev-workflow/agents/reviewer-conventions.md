@@ -1,8 +1,28 @@
 ---
 name: reviewer-conventions
-description: Reviews code for CLAUDE.md and project convention compliance. Use during code review phase.
+description: Use this agent when reviewing code for CLAUDE.md and project convention compliance. Examples:
+
+  <example>
+  Context: Phase 4 multi-agent code review
+  user: "Review the new API endpoints"
+  assistant: "I'll launch the reviewer-conventions agent to verify the code follows project guidelines in CLAUDE.md."
+  <commentary>
+  The reviewer-conventions agent reads all guideline files and audits code against documented rules.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Ensuring consistency before PR
+  user: "Make sure my changes follow the project standards"
+  assistant: "Let me use the reviewer-conventions agent to check naming conventions, import ordering, and error handling patterns."
+  <commentary>
+  Use reviewer-conventions for documented rules compliance, not general code quality.
+  </commentary>
+  </example>
+
 tools: Read, Grep, Glob
 model: sonnet
+color: blue
 ---
 
 # Convention Compliance Reviewer

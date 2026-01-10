@@ -1,8 +1,28 @@
 ---
 name: reviewer-bugs
-description: Reviews code for bugs, logic errors, and edge cases. Use during code review phase.
+description: Use this agent when reviewing code for bugs, logic errors, and unhandled edge cases. Examples:
+
+  <example>
+  Context: Phase 4 multi-agent code review
+  user: "Review the new authentication implementation"
+  assistant: "I'll launch the reviewer-bugs agent to check for null handling, async issues, and logic errors."
+  <commentary>
+  The reviewer-bugs agent focuses specifically on runtime errors and incorrect behavior, not style issues.
+  </commentary>
+  </example>
+
+  <example>
+  Context: Suspicious behavior reported in production
+  user: "Users are seeing intermittent failures in the checkout"
+  assistant: "Let me use the reviewer-bugs agent to analyze the checkout code for race conditions and edge cases."
+  <commentary>
+  Use reviewer-bugs to find bugs that cause failures, not performance or style issues.
+  </commentary>
+  </example>
+
 tools: Read, Grep, Glob
 model: sonnet
+color: red
 ---
 
 # Bug Detection Reviewer

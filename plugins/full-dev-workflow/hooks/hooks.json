@@ -3,30 +3,36 @@
   "hooks": {
     "Stop": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/stop-hook.sh",
+            "timeout": 10
           }
         ]
       }
     ],
     "UserPromptSubmit": [
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/user-prompt-hook.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/user-prompt-hook.sh",
+            "timeout": 5
           }
         ]
       }
     ],
     "PostToolUse": [
       {
+        "matcher": "Edit|Write|Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-tool-hook.sh"
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/post-tool-hook.sh",
+            "timeout": 10
           }
         ]
       }

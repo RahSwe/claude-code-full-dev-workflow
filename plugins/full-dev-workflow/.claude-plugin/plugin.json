@@ -3,8 +3,19 @@
   "description": "Complete feature development workflow with code mapping, TDD, multi-agent review, UI verification, PR management, and state persistence for resume capability",
   "version": "1.0.0",
   "author": {
-    "name": "ISTLegal",
-    "email": "dev@istlegal.com"
+    "name": "RahSwe",
+    "url": "https://github.com/RahSwe"
   },
-  "repository": "https://github.com/RahSwe/claude-code-full-dev-workflow"
+  "repository": "https://github.com/RahSwe/claude-code-full-dev-workflow",
+  "homepage": "https://github.com/RahSwe/claude-code-full-dev-workflow#readme",
+  "license": "Copyright",
+  "keywords": [
+    "workflow",
+    "tdd",
+    "code-review",
+    "automation",
+    "testing",
+    "pull-request",
+    "development"
+  ]
 }
