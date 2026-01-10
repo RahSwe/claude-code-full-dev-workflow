@@ -77,8 +77,8 @@ Phase 2: Test Creation - [completed/current/pending]
 Phase 3: Ralph Loop Implementation - [completed/current/pending]
 Phase 4: Multi-Agent Code Review - [completed/current/pending]
 Phase 5: Automatic Fixes - [completed/current/pending]
-Phase 6: UI Verification - [completed/current/pending]
-Phase 7: Code Simplification - [completed/current/pending]
+Phase 6: Code Simplification - [completed/current/pending]
+Phase 7: UI Verification - [completed/current/pending]
 Phase 8: Push PR - [completed/current/pending]
 Phase 9-10: PR Review Loop - [completed/current/pending]
 ```
@@ -138,15 +138,15 @@ Based on user choice, continue with the appropriate phase from the full-dev work
 - Review which issues were addressed
 - Continue fixing remaining issues
 
-**Phase 6 (UI Verification)**:
-
-- Ask user if UI verification is needed
-- Perform or skip as appropriate
-
-**Phase 7 (Code Simplification)**:
+**Phase 6 (Code Simplification)**:
 
 - Use `modified_files` list from state
 - Run simplifier on any files not yet simplified
+
+**Phase 7 (UI Verification)**:
+
+- Ask user if UI verification is needed
+- Perform or skip as appropriate
 
 **Phase 8 (Push PR)**:
 

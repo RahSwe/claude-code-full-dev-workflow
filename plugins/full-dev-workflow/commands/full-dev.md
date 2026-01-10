@@ -41,7 +41,7 @@ approval_timestamp: ""
 # Plan info
 plan_file: ""
 
-# Modified files (for Phase 7 code simplifier)
+# Modified files (for Phase 6 code simplifier)
 modified_files:
 
 # Test status
@@ -76,7 +76,7 @@ Update the state file:
 - **Phase 2**: Update `test_status: failing` after running initial tests
 - **Phase 3**: Update `test_status: passing` when Ralph completes
 - **Phase 4**: Update `review_agents_completed` and `review_issues_found`
-- **Phase 7**: Read `modified_files` for code simplifier input
+- **Phase 6**: Read `modified_files` for code simplifier input
 - **Phase 8**: Set `pr_url` after PR creation
 - **Phase 9-10**: Increment `pr_review_iterations` each cycle
 
@@ -246,31 +246,7 @@ Update the state file:
 
 ---
 
-## Phase 6: UI Verification (Chrome)
-
-**Goal**: Verify feature works correctly in actual UI
-
-**Actions**:
-
-1. Check if this is a UI-affecting feature
-2. If yes, use browser automation (Claude in Chrome or Playwright):
-   - Navigate to relevant pages
-   - Test the new feature manually
-   - Verify visual appearance
-   - Test user interactions
-   - Check for console errors
-   - Take screenshots of key states
-3. If issues found:
-   - Document with screenshots
-   - Fix issues
-   - Re-verify
-4. If no UI changes, skip this phase
-
-**Output**: Verified UI functionality with evidence
-
----
-
-## Phase 7: Code Simplification
+## Phase 6: Code Simplification
 
 **Goal**: Simplify and refine all code for clarity, consistency, and maintainability
 
@@ -303,6 +279,30 @@ Update the state file:
 - Improve code organization
 
 **Output**: Clean, simplified code ready for PR
+
+---
+
+## Phase 7: UI Verification (Chrome)
+
+**Goal**: Verify feature works correctly in actual UI
+
+**Actions**:
+
+1. Check if this is a UI-affecting feature
+2. If yes, use browser automation (Claude in Chrome or Playwright):
+   - Navigate to relevant pages
+   - Test the new feature manually
+   - Verify visual appearance
+   - Test user interactions
+   - Check for console errors
+   - Take screenshots of key states
+3. If issues found:
+   - Document with screenshots
+   - Fix issues
+   - Re-verify
+4. If no UI changes, skip this phase
+
+**Output**: Verified UI functionality with evidence
 
 ---
 

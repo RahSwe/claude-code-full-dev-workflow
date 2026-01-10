@@ -24,8 +24,8 @@ A comprehensive feature development workflow with code mapping, TDD, multi-agent
 | 3     | Ralph Loop          | Iterative implementation until tests pass          |
 | 4     | Code Review         | Multi-agent review (5 perspectives)                |
 | 5     | Auto Fixes          | Automatically fix high-confidence issues           |
-| 6     | UI Verification     | Browser testing for UI features                    |
-| 7     | Code Simplification | Refactor for clarity and maintainability           |
+| 6     | Code Simplification | Refactor for clarity and maintainability           |
+| 7     | UI Verification     | Browser testing for UI features                    |
 | 8     | Push PR             | Create well-documented pull request                |
 | 9-10  | PR Review Loop      | Address feedback until approval                    |
 
@@ -50,7 +50,7 @@ Workflow progress is saved to `.claude/full-dev.local.md`. If interrupted, use `
 This plugin works best with:
 
 - `ralph-loop` plugin - For Phase 3 iterative development
-- `code-simplifier` plugin - For Phase 7 code cleanup
+- `code-simplifier` plugin - For Phase 6 code cleanup
 
 ## Hooks
 

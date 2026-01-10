@@ -11,7 +11,7 @@ This plugin provides:
 3. **Advisory warnings** when phase prerequisites aren't met
 4. **State persistence** to track workflow progress across sessions
 5. **Resume capability** to continue workflows from where they left off
-6. **Modified files tracking** for code simplifier in Phase 7
+6. **Modified files tracking** for code simplifier in Phase 6
 7. **Test regression detection** to alert when previously passing tests fail
 8. **Pre-commit verification** to warn before commits with failing tests
 
@@ -77,7 +77,7 @@ This plugin includes specialized agents for each workflow phase:
 
 **Example warning**:
 
-```
+```text
 [CRITICAL] Full-dev workflow 'Add auth feature' - Phase 3 (Ralph Loop Implementation) incomplete.
 Progress saved to .claude/full-dev.local.md. Use /full-dev-workflow:resume to continue.
 ```
@@ -94,7 +94,7 @@ Progress saved to .claude/full-dev.local.md. Use /full-dev-workflow:resume to co
 
 **Example output**:
 
-```
+```text
 Plan approval detected. Workflow will proceed to Phase 1.
 ```
 
@@ -110,14 +110,14 @@ Plan approval detected. Workflow will proceed to Phase 1.
 
 **Test regression warning**:
 
-```
+```text
 WARNING: Test regression detected! 3 new failing test(s).
 Previously: 0 failing, Now: 3 failing.
 ```
 
 **Pre-commit warning**:
 
-```
+```text
 WARNING: Attempting to commit with 3 failing test(s).
 Consider fixing tests before committing.
 ```
@@ -145,7 +145,7 @@ approval_timestamp: "2026-01-10T10:05:00Z"
 # Plan info
 plan_file: ".claude/plans/user-auth.md"
 
-# Modified files (for Phase 7 code simplifier)
+# Modified files (for Phase 6 code simplifier)
 modified_files:
   - frontend/src/components/Auth.tsx
   - server/endpoints/api/auth.ts
@@ -187,8 +187,8 @@ This ensures the workflow remains flexible while providing helpful guidance.
 | 3     | Ralph Loop Implementation |
 | 4     | Multi-Agent Code Review   |
 | 5     | Automatic Fixes           |
-| 6     | UI Verification           |
-| 7     | Code Simplification       |
+| 6     | Code Simplification       |
+| 7     | UI Verification           |
 | 8     | Push PR                   |
 | 9-10  | PR Review Loop            |
 
@@ -202,7 +202,7 @@ Phases 3, 5, 9, and 10 show stronger warnings when exiting:
 
 ## Files
 
-```
+```text
 .claude/plugins/full-dev-workflow/
 ├── .claude-plugin/
 │   └── plugin.json               # Plugin metadata
