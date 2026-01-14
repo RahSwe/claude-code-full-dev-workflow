@@ -1,7 +1,7 @@
 {
   "name": "full-dev-workflow",
-  "description": "Complete feature development workflow with code mapping, TDD, multi-agent review, UI verification, PR management, and state persistence for resume capability",
-  "version": "1.0.1",
+  "description": "Complete feature development workflow with code mapping, TDD, native Ralph loop (with dual-exit gate, circuit breaker, rate limiting), multi-agent review, UI verification, PR management, and state persistence",
+  "version": "1.1.1",
   "author": {
     "name": "RahSwe",
     "url": "https://github.com/RahSwe"

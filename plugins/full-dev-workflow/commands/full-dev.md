@@ -174,11 +174,15 @@ Update the state file:
    - Run tests after each change
    - Iterate until ALL tests pass
    - Follow project conventions strictly
-   - Output <promise>ALL_TESTS_PASS</promise> when complete
+   - Include ALL_TESTS_PASS and EXIT_SIGNAL: true when complete
    ```
 
-2. Start Ralph loop: `/ralph-loop:ralph-loop "<prompt>" --completion-promise "ALL_TESTS_PASS" --max-iterations 30`
-3. Let Ralph iterate until all tests pass or max iterations reached
+2. Start Ralph loop: `/full-dev-workflow:ralph "<prompt>" --completion-promise "ALL_TESTS_PASS" --max-iterations 30 --timeout 60`
+3. Ralph will iterate with:
+   - **Dual-condition exit gate**: Requires both completion signal AND EXIT_SIGNAL: true
+   - **Circuit breaker**: Stops on 3 consecutive real errors
+   - **Rate limiting**: 100 API calls/hour (prevents runaway loops)
+   - **Session continuity**: Preserves context across interruptions
 4. If max iterations reached without success:
    - Document what's blocking progress
    - Ask user for guidance
