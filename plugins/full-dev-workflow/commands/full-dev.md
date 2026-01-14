@@ -254,12 +254,12 @@ Update the state file:
 
 **Goal**: Simplify and refine all code for clarity, consistency, and maintainability
 
-**IMPORTANT**: This phase runs fully autonomously using the code-simplifier plugin.
+**IMPORTANT**: This phase runs fully autonomously using the native code-simplifier agent.
 
 **Actions**:
 
 1. Identify all files modified during this workflow (from `modified_files` in state)
-2. Run the `code-simplifier:code-simplifier` agent on each modified file:
+2. Run the `full-dev-workflow:code-simplifier` agent on each modified file:
    - Simplify complex logic
    - Improve variable and function naming
    - Remove redundant code
