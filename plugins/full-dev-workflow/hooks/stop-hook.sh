@@ -8,20 +8,23 @@ set -euo pipefail
 # State file location
 STATE_FILE=".claude/full-dev.local.md"
 
-# Phase names for human-readable messages
-declare -A PHASE_NAMES=(
-  [0]="Plan Mode"
-  [1]="Code Mapping"
-  [2]="Test Creation"
-  [3]="Ralph Loop Implementation"
-  [4]="Multi-Agent Code Review"
-  [5]="Automatic Fixes"
-  [6]="Code Simplification"
-  [7]="UI Verification"
-  [8]="Push PR"
-  [9]="PR Review Loop"
-  [10]="PR Review Loop"
-)
+# Phase names for human-readable messages (bash 3.x compatible)
+get_phase_name() {
+  case "$1" in
+    0) echo "Plan Mode" ;;
+    1) echo "Code Mapping" ;;
+    2) echo "Test Creation" ;;
+    3) echo "Ralph Loop Implementation" ;;
+    4) echo "Multi-Agent Code Review" ;;
+    5) echo "Automatic Fixes" ;;
+    6) echo "Code Simplification" ;;
+    7) echo "UI Verification" ;;
+    8) echo "Push PR" ;;
+    9) echo "PR Review Loop" ;;
+    10) echo "PR Review Loop" ;;
+    *) echo "Phase $1" ;;
+  esac
+}
 
 # Critical phases that warrant stronger warnings
 CRITICAL_PHASES=(3 5 9 10)
@@ -58,7 +61,7 @@ if [[ ! "$CURRENT_PHASE" =~ ^[0-9]+$ ]]; then
 fi
 
 # Get phase name
-PHASE_NAME="${PHASE_NAMES[$CURRENT_PHASE]:-Phase $CURRENT_PHASE}"
+PHASE_NAME=$(get_phase_name "$CURRENT_PHASE")
 
 # Update timestamp before exit
 TEMP_FILE="${STATE_FILE}.tmp.$$"
