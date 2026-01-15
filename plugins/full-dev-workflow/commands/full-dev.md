@@ -82,6 +82,44 @@ Update the state file:
 
 ---
 
+## Phase Transition Protocol (CRITICAL)
+
+**Every phase transition MUST emit signals** to trigger automatic state file updates via hooks.
+
+### At the END of each phase, run:
+
+```bash
+echo "PHASE_COMPLETE: N"
+```
+
+Where N is the phase number just completed (0-10).
+
+### At the START of the next phase, run:
+
+```bash
+echo "ENTERING_PHASE: N"
+```
+
+Where N is the phase number being started.
+
+### Example - After Phase 0 approval:
+
+```bash
+echo "PHASE_COMPLETE: 0"
+echo "ENTERING_PHASE: 1"
+```
+
+### Why this matters:
+
+These signals are detected by the `post-tool-hook.sh` and automatically update:
+- `current_phase` in state file
+- `completed_phases` array
+- `updated_at` timestamp
+
+**This ensures state file updates survive context compaction**, allowing `/full-dev-workflow:resume` to work correctly even if the conversation is interrupted.
+
+---
+
 ## Phase 0: Plan Mode - Feature Specification (REQUIRED)
 
 **Goal**: Get user approval on feature specification before any implementation
@@ -115,6 +153,12 @@ Update the state file:
 
 **Output**: Approved feature specification with clear E2E test requirements
 
+**Phase 0 Exit** (after user approval):
+```bash
+echo "PHASE_COMPLETE: 0"
+echo "ENTERING_PHASE: 1"
+```
+
 ---
 
 ## Phase 1: Code Mapping & Discovery
@@ -134,6 +178,12 @@ Update the state file:
 5. Present summary: affected files, patterns found, integration points
 
 **Output**: Comprehensive map of affected code and architecture
+
+**Phase 1 Exit**:
+```bash
+echo "PHASE_COMPLETE: 1"
+echo "ENTERING_PHASE: 2"
+```
 
 ---
 
@@ -156,6 +206,12 @@ Update the state file:
 5. Commit test files: "test: add tests for [feature]"
 
 **Output**: Failing test suite ready for implementation
+
+**Phase 2 Exit**:
+```bash
+echo "PHASE_COMPLETE: 2"
+echo "ENTERING_PHASE: 3"
+```
 
 ---
 
@@ -189,6 +245,12 @@ Update the state file:
 
 **Output**: Working implementation with passing tests
 
+**Phase 3 Exit**:
+```bash
+echo "PHASE_COMPLETE: 3"
+echo "ENTERING_PHASE: 4"
+```
+
 ---
 
 ## Phase 4: Multi-Agent Code Review
@@ -211,6 +273,12 @@ Update the state file:
    - Minor (nice to fix)
 
 **Output**: Prioritized list of issues to address
+
+**Phase 4 Exit**:
+```bash
+echo "PHASE_COMPLETE: 4"
+echo "ENTERING_PHASE: 5"
+```
 
 ---
 
@@ -248,6 +316,12 @@ Update the state file:
 
 **Output**: Clean code with all high-confidence issues automatically resolved
 
+**Phase 5 Exit**:
+```bash
+echo "PHASE_COMPLETE: 5"
+echo "ENTERING_PHASE: 6"
+```
+
 ---
 
 ## Phase 6: Code Simplification
@@ -284,6 +358,12 @@ Update the state file:
 
 **Output**: Clean, simplified code ready for PR
 
+**Phase 6 Exit**:
+```bash
+echo "PHASE_COMPLETE: 6"
+echo "ENTERING_PHASE: 7"
+```
+
 ---
 
 ## Phase 7: UI Verification (Chrome)
@@ -307,6 +387,12 @@ Update the state file:
 4. If no UI changes, skip this phase
 
 **Output**: Verified UI functionality with evidence
+
+**Phase 7 Exit**:
+```bash
+echo "PHASE_COMPLETE: 7"
+echo "ENTERING_PHASE: 8"
+```
 
 ---
 
@@ -347,6 +433,12 @@ Update the state file:
 7. Return PR URL
 
 **Output**: Open pull request ready for human review
+
+**Phase 8 Exit**:
+```bash
+echo "PHASE_COMPLETE: 8"
+echo "ENTERING_PHASE: 9"
+```
 
 ---
 
@@ -459,6 +551,12 @@ Ready for re-review."
 3. Report completion status
 
 **Output**: PR with all medium+ feedback addressed, tests passing, ready for merge
+
+**Phase 9-10 Exit** (when PR is approved or merged):
+```bash
+echo "PHASE_COMPLETE: 9"
+echo "PHASE_COMPLETE: 10"
+```
 
 ---
 

@@ -175,5 +175,60 @@ if [[ "$TOOL_NAME" == "Bash" ]]; then
   fi
 fi
 
+# ============================================
+# PHASE COMPLETION SIGNAL DETECTION
+# ============================================
+
+# Detect phase completion signals in tool result
+# Pattern: PHASE_COMPLETE: N (where N is 0-10)
+if echo "$TOOL_RESULT" | grep -qE "PHASE_COMPLETE: [0-9]+"; then
+  COMPLETED_PHASE=$(echo "$TOOL_RESULT" | grep -oE "PHASE_COMPLETE: [0-9]+" | head -1 | grep -oE "[0-9]+")
+
+  if [[ -n "$COMPLETED_PHASE" ]]; then
+    # Add to completed_phases array (deduplicated)
+    CURRENT_LIST=$(parse_frontmatter "completed_phases")
+    if [[ "$CURRENT_LIST" == "[]" || -z "$CURRENT_LIST" ]]; then
+      NEW_LIST="[$COMPLETED_PHASE]"
+    elif ! echo "$CURRENT_LIST" | grep -qE "\\b$COMPLETED_PHASE\\b"; then
+      # Only add if not already present
+      NEW_LIST=$(echo "$CURRENT_LIST" | sed "s/]$/, $COMPLETED_PHASE]/")
+    else
+      NEW_LIST="$CURRENT_LIST"
+    fi
+
+    TEMP_FILE="${STATE_FILE}.tmp.$$"
+    TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    sed -e "s/^completed_phases: .*/completed_phases: $NEW_LIST/" \
+        -e "s/^updated_at: .*/updated_at: \"$TIMESTAMP\"/" \
+        "$STATE_FILE" > "$TEMP_FILE" 2>/dev/null && mv "$TEMP_FILE" "$STATE_FILE" || true
+
+    # Emit confirmation message
+    jq -n --arg msg "Phase $COMPLETED_PHASE marked complete. State updated." \
+      '{"decision": "allow", "systemMessage": $msg}'
+    exit 0
+  fi
+fi
+
+# Detect entering new phase signal
+# Pattern: ENTERING_PHASE: N (where N is 0-10)
+if echo "$TOOL_RESULT" | grep -qE "ENTERING_PHASE: [0-9]+"; then
+  NEXT_PHASE=$(echo "$TOOL_RESULT" | grep -oE "ENTERING_PHASE: [0-9]+" | head -1 | grep -oE "[0-9]+")
+
+  if [[ -n "$NEXT_PHASE" ]]; then
+    TEMP_FILE="${STATE_FILE}.tmp.$$"
+    TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+    sed -e "s/^current_phase: .*/current_phase: $NEXT_PHASE/" \
+        -e "s/^updated_at: .*/updated_at: \"$TIMESTAMP\"/" \
+        "$STATE_FILE" > "$TEMP_FILE" 2>/dev/null && mv "$TEMP_FILE" "$STATE_FILE" || true
+
+    # Emit confirmation message
+    jq -n --arg msg "Now in Phase $NEXT_PHASE. State updated." \
+      '{"decision": "allow", "systemMessage": $msg}'
+    exit 0
+  fi
+fi
+
 # Default: allow with no message
 exit 0

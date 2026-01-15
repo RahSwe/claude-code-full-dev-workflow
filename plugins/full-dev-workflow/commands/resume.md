@@ -63,6 +63,22 @@ Perform validation checks:
 1. **Git branch matches**: `git branch --show-current` should match state branch
 2. **Plan file exists**: If `plan_file` is set, verify it exists
 3. **PR exists** (if in Phase 9-10): Verify PR URL is valid with `gh pr view`
+4. **Phase completion signals worked**:
+   - `completed_phases` should contain phases 0 through (`current_phase` - 1)
+   - If gaps exist (e.g., `current_phase: 5` but `completed_phases: []`), warn user about potentially skipped phases
+   - Suggest using `git diff --name-only` to verify actual work done vs. state tracking
+
+**State Recovery** (if phase tracking is out of sync):
+
+If you detect that phases were completed but not tracked (state shows phase 0 but files clearly show implementation):
+
+1. Ask user to confirm which phases were actually completed
+2. Manually update `completed_phases` to match reality:
+   ```bash
+   echo "PHASE_COMPLETE: 0"
+   echo "PHASE_COMPLETE: 1"
+   # ... for each completed phase
+   ```
 
 Report any inconsistencies to the user.
 
@@ -162,7 +178,12 @@ Based on user choice, continue with the appropriate phase from the full-dev work
 
 ## Important Notes
 
-- Always update the state file after each phase completion
+- **Emit phase signals** at phase boundaries to trigger automatic state updates:
+  ```bash
+  echo "PHASE_COMPLETE: N"
+  echo "ENTERING_PHASE: N"
+  ```
+- These signals are detected by hooks and update the state file automatically
 - Keep `modified_files` list current
 - Update `test_status` after running tests
 - Save state before any potentially failing operation
