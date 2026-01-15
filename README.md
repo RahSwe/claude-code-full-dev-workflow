@@ -44,6 +44,7 @@ Complete feature development workflow with 10 phases from planning to PR merge.
 - `full-dev-workflow:reviewer-quality` - Phase 4 code quality
 - `full-dev-workflow:reviewer-security` - Phase 4 security review
 - `full-dev-workflow:reviewer-performance` - Phase 4 performance review
+- `full-dev-workflow:code-simplifier` - Phase 6 code simplification (Opus)
 
 **Advisory Hooks:**
 
@@ -54,17 +55,17 @@ Complete feature development workflow with 10 phases from planning to PR merge.
 **Commands:**
 
 - `/full-dev-workflow:full-dev <feature>` - Start the workflow
+- `/full-dev-workflow:ralph <prompt>` - Run autonomous development loop (Phase 3)
 - `/full-dev-workflow:resume` - Resume interrupted workflow
 - `/full-dev-workflow:help` - Show help
 
 ## Dependencies
 
-This plugin works best with:
+This plugin is **fully self-contained** with no external dependencies.
 
-- [ralph-loop](https://github.com/RahSwe/claude-code-ralph-loop) - For Phase 3 iterative development
-- [code-simplifier](https://github.com/RahSwe/claude-code-code-simplifier) - For Phase 6 code cleanup
-
-And automatic code review in GitHub on published PR's and changes (Claude Code Review, CodeRabbit, Greptile etc)
+All components are built-in:
+- **Phase 3 Ralph Loop** - Native implementation with dual-exit gate, circuit breaker, rate limiting (based on [frankbria/ralph-claude-code](https://github.com/frankbria/ralph-claude-code))
+- **Phase 6 Code Simplifier** - Native agent using Opus model for intelligent refactoring (based on [anthropics/claude-plugins-official](https://github.com/anthropics/claude-plugins-official))
 
 ## Quick Start
 

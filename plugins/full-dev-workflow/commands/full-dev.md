@@ -82,6 +82,44 @@ Update the state file:
 
 ---
 
+## Phase Transition Protocol (CRITICAL)
+
+**Every phase transition MUST emit signals** to trigger automatic state file updates via hooks.
+
+### At the END of each phase, run:
+
+```bash
+echo "PHASE_COMPLETE: N"
+```
+
+Where N is the phase number just completed (0-10).
+
+### At the START of the next phase, run:
+
+```bash
+echo "ENTERING_PHASE: N"
+```
+
+Where N is the phase number being started.
+
+### Example - After Phase 0 approval:
+
+```bash
+echo "PHASE_COMPLETE: 0"
+echo "ENTERING_PHASE: 1"
+```
+
+### Why this matters:
+
+These signals are detected by the `post-tool-hook.sh` and automatically update:
+- `current_phase` in state file
+- `completed_phases` array
+- `updated_at` timestamp
+
+**This ensures state file updates survive context compaction**, allowing `/full-dev-workflow:resume` to work correctly even if the conversation is interrupted.
+
+---
+
 ## Phase 0: Plan Mode - Feature Specification (REQUIRED)
 
 **Goal**: Get user approval on feature specification before any implementation
@@ -115,6 +153,12 @@ Update the state file:
 
 **Output**: Approved feature specification with clear E2E test requirements
 
+**Phase 0 Exit** (after user approval):
+```bash
+echo "PHASE_COMPLETE: 0"
+echo "ENTERING_PHASE: 1"
+```
+
 ---
 
 ## Phase 1: Code Mapping & Discovery
@@ -134,6 +178,12 @@ Update the state file:
 5. Present summary: affected files, patterns found, integration points
 
 **Output**: Comprehensive map of affected code and architecture
+
+**Phase 1 Exit**:
+```bash
+echo "PHASE_COMPLETE: 1"
+echo "ENTERING_PHASE: 2"
+```
 
 ---
 
@@ -157,6 +207,12 @@ Update the state file:
 
 **Output**: Failing test suite ready for implementation
 
+**Phase 2 Exit**:
+```bash
+echo "PHASE_COMPLETE: 2"
+echo "ENTERING_PHASE: 3"
+```
+
 ---
 
 ## Phase 3: Ralph Loop Implementation
@@ -174,16 +230,26 @@ Update the state file:
    - Run tests after each change
    - Iterate until ALL tests pass
    - Follow project conventions strictly
-   - Output <promise>ALL_TESTS_PASS</promise> when complete
+   - Include ALL_TESTS_PASS and EXIT_SIGNAL: true when complete
    ```
 
-2. Start Ralph loop: `/ralph-loop:ralph-loop "<prompt>" --completion-promise "ALL_TESTS_PASS" --max-iterations 30`
-3. Let Ralph iterate until all tests pass or max iterations reached
+2. Start Ralph loop: `/full-dev-workflow:ralph "<prompt>" --completion-promise "ALL_TESTS_PASS" --max-iterations 30 --timeout 60`
+3. Ralph will iterate with:
+   - **Dual-condition exit gate**: Requires both completion signal AND EXIT_SIGNAL: true
+   - **Circuit breaker**: Stops on 3 consecutive real errors
+   - **Rate limiting**: 100 API calls/hour (prevents runaway loops)
+   - **Session continuity**: Preserves context across interruptions
 4. If max iterations reached without success:
    - Document what's blocking progress
    - Ask user for guidance
 
 **Output**: Working implementation with passing tests
+
+**Phase 3 Exit**:
+```bash
+echo "PHASE_COMPLETE: 3"
+echo "ENTERING_PHASE: 4"
+```
 
 ---
 
@@ -207,6 +273,12 @@ Update the state file:
    - Minor (nice to fix)
 
 **Output**: Prioritized list of issues to address
+
+**Phase 4 Exit**:
+```bash
+echo "PHASE_COMPLETE: 4"
+echo "ENTERING_PHASE: 5"
+```
 
 ---
 
@@ -244,18 +316,24 @@ Update the state file:
 
 **Output**: Clean code with all high-confidence issues automatically resolved
 
+**Phase 5 Exit**:
+```bash
+echo "PHASE_COMPLETE: 5"
+echo "ENTERING_PHASE: 6"
+```
+
 ---
 
 ## Phase 6: Code Simplification
 
 **Goal**: Simplify and refine all code for clarity, consistency, and maintainability
 
-**IMPORTANT**: This phase runs fully autonomously using the code-simplifier plugin.
+**IMPORTANT**: This phase runs fully autonomously using the native code-simplifier agent.
 
 **Actions**:
 
 1. Identify all files modified during this workflow (from `modified_files` in state)
-2. Run the `code-simplifier:code-simplifier` agent on each modified file:
+2. Run the `full-dev-workflow:code-simplifier` agent on each modified file:
    - Simplify complex logic
    - Improve variable and function naming
    - Remove redundant code
@@ -280,6 +358,12 @@ Update the state file:
 
 **Output**: Clean, simplified code ready for PR
 
+**Phase 6 Exit**:
+```bash
+echo "PHASE_COMPLETE: 6"
+echo "ENTERING_PHASE: 7"
+```
+
 ---
 
 ## Phase 7: UI Verification (Chrome)
@@ -303,6 +387,12 @@ Update the state file:
 4. If no UI changes, skip this phase
 
 **Output**: Verified UI functionality with evidence
+
+**Phase 7 Exit**:
+```bash
+echo "PHASE_COMPLETE: 7"
+echo "ENTERING_PHASE: 8"
+```
 
 ---
 
@@ -343,6 +433,12 @@ Update the state file:
 7. Return PR URL
 
 **Output**: Open pull request ready for human review
+
+**Phase 8 Exit**:
+```bash
+echo "PHASE_COMPLETE: 8"
+echo "ENTERING_PHASE: 9"
+```
 
 ---
 
@@ -455,6 +551,12 @@ Ready for re-review."
 3. Report completion status
 
 **Output**: PR with all medium+ feedback addressed, tests passing, ready for merge
+
+**Phase 9-10 Exit** (when PR is approved or merged):
+```bash
+echo "PHASE_COMPLETE: 9"
+echo "PHASE_COMPLETE: 10"
+```
 
 ---
 

@@ -8,11 +8,31 @@ A comprehensive feature development workflow with code mapping, TDD, multi-agent
 
 ## Commands
 
-| Command                                 | Description                         |
-| --------------------------------------- | ----------------------------------- |
-| `/full-dev-workflow:full-dev <feature>` | Start the full development workflow |
-| `/full-dev-workflow:resume`             | Resume an interrupted workflow      |
-| `/full-dev-workflow:help`               | Show this help message              |
+| Command                                 | Description                                      |
+| --------------------------------------- | ------------------------------------------------ |
+| `/full-dev-workflow:full-dev <feature>` | Start the full development workflow              |
+| `/full-dev-workflow:ralph <prompt>`     | Run autonomous development loop (used in Phase 3)|
+| `/full-dev-workflow:resume`             | Resume an interrupted workflow                   |
+| `/full-dev-workflow:help`               | Show this help message                           |
+
+### Ralph Command Options
+
+The native Ralph implementation includes advanced safety features:
+
+```
+/full-dev-workflow:ralph "<prompt>" [options]
+
+Options:
+  --completion-promise <signal>  Signal to detect completion (e.g., "ALL_TESTS_PASS")
+  --max-iterations <n>           Maximum iterations (default: 30)
+  --timeout <minutes>            Timeout per iteration (default: 60)
+```
+
+**Safety Features:**
+- **Dual-condition exit**: Requires BOTH completion signal AND `EXIT_SIGNAL: true`
+- **Circuit breaker**: Stops after 3 consecutive real errors
+- **Rate limiting**: 100 API calls/hour (prevents runaway loops)
+- **Session continuity**: Preserves context for 24 hours
 
 ## Workflow Phases
 
@@ -40,6 +60,7 @@ This plugin includes specialized agents for each phase:
 - `full-dev-workflow:reviewer-quality` - Phase 4 code quality
 - `full-dev-workflow:reviewer-security` - Phase 4 security review
 - `full-dev-workflow:reviewer-performance` - Phase 4 performance review
+- `full-dev-workflow:code-simplifier` - Phase 6 code simplification (uses Opus model)
 
 ## State Persistence
 
@@ -47,10 +68,11 @@ Workflow progress is saved to `.claude/full-dev.local.md`. If interrupted, use `
 
 ## Dependencies
 
-This plugin works best with:
+This plugin is fully self-contained with no external dependencies.
 
-- `ralph-loop` plugin - For Phase 3 iterative development
-- `code-simplifier` plugin - For Phase 6 code cleanup
+All components are built-in:
+- **Ralph loop** (Phase 3) - Native implementation with dual-exit gate, circuit breaker, rate limiting
+- **Code simplifier** (Phase 6) - Native agent using Opus model for intelligent refactoring
 
 ## Hooks
 
