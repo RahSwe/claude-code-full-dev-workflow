@@ -30,6 +30,11 @@ get_phase_name() {
 CRITICAL_PHASES=(3 5 9 10)
 
 # Read hook input from stdin
+# Check if stdin is connected (fixes Windows process leak where cat hangs)
+if [ -t 0 ]; then
+  # stdin is a terminal (not piped), no input available
+  exit 0
+fi
 HOOK_INPUT=$(cat)
 
 # If no state file exists, allow exit silently
