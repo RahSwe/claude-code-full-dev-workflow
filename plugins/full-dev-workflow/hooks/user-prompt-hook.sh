@@ -12,6 +12,11 @@ STATE_FILE=".claude/full-dev.local.md"
 APPROVAL_KEYWORDS="yes|approved|go ahead|looks good|proceed|lgtm|ok|okay|approve|ship it|do it|continue|start"
 
 # Read hook input from stdin
+# Check if stdin is connected (fixes Windows process leak where cat hangs)
+if [ -t 0 ]; then
+  # stdin is a terminal (not piped), no input available
+  exit 0
+fi
 HOOK_INPUT=$(cat)
 
 # If no state file exists, do nothing
