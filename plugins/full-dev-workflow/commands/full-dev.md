@@ -86,7 +86,7 @@ Update the state file:
 
 **Every phase transition MUST emit signals** to trigger automatic state file updates via hooks.
 
-### At the END of each phase, run:
+### At the END of each phase, run
 
 ```bash
 echo "PHASE_COMPLETE: N"
@@ -94,7 +94,7 @@ echo "PHASE_COMPLETE: N"
 
 Where N is the phase number just completed (0-10).
 
-### At the START of the next phase, run:
+### At the START of the next phase, run
 
 ```bash
 echo "ENTERING_PHASE: N"
@@ -102,16 +102,17 @@ echo "ENTERING_PHASE: N"
 
 Where N is the phase number being started.
 
-### Example - After Phase 0 approval:
+### Example - After Phase 0 approval
 
 ```bash
 echo "PHASE_COMPLETE: 0"
 echo "ENTERING_PHASE: 1"
 ```
 
-### Why this matters:
+### Why this matters
 
 These signals are detected by the `post-tool-hook.sh` and automatically update:
+
 - `current_phase` in state file
 - `completed_phases` array
 - `updated_at` timestamp
@@ -154,6 +155,7 @@ These signals are detected by the `post-tool-hook.sh` and automatically update:
 **Output**: Approved feature specification with clear E2E test requirements
 
 **Phase 0 Exit** (after user approval):
+
 ```bash
 echo "PHASE_COMPLETE: 0"
 echo "ENTERING_PHASE: 1"
@@ -180,6 +182,7 @@ echo "ENTERING_PHASE: 1"
 **Output**: Comprehensive map of affected code and architecture
 
 **Phase 1 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 1"
 echo "ENTERING_PHASE: 2"
@@ -208,6 +211,7 @@ echo "ENTERING_PHASE: 2"
 **Output**: Failing test suite ready for implementation
 
 **Phase 2 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 2"
 echo "ENTERING_PHASE: 3"
@@ -246,6 +250,7 @@ echo "ENTERING_PHASE: 3"
 **Output**: Working implementation with passing tests
 
 **Phase 3 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 3"
 echo "ENTERING_PHASE: 4"
@@ -275,6 +280,7 @@ echo "ENTERING_PHASE: 4"
 **Output**: Prioritized list of issues to address
 
 **Phase 4 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 4"
 echo "ENTERING_PHASE: 5"
@@ -317,6 +323,7 @@ echo "ENTERING_PHASE: 5"
 **Output**: Clean code with all high-confidence issues automatically resolved
 
 **Phase 5 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 5"
 echo "ENTERING_PHASE: 6"
@@ -359,6 +366,7 @@ echo "ENTERING_PHASE: 6"
 **Output**: Clean, simplified code ready for PR
 
 **Phase 6 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 6"
 echo "ENTERING_PHASE: 7"
@@ -366,29 +374,43 @@ echo "ENTERING_PHASE: 7"
 
 ---
 
-## Phase 7: UI Verification (Chrome)
+## Phase 7: UI Verification (Browser)
 
 **Goal**: Verify feature works correctly in actual UI
 
 **Actions**:
 
 1. Check if this is a UI-affecting feature
-2. If yes, use browser automation (Claude in Chrome or Playwright):
-   - Navigate to relevant pages
-   - Test the new feature manually
-   - Verify visual appearance
-   - Test user interactions
-   - Check for console errors
-   - Take screenshots of key states
+2. If yes, use the `browser-use` skill for automated UI testing:
+   - Invoke the skill: `/full-dev-workflow:browser-use`
+   - Use `browser-use open <url>` to navigate to relevant pages
+   - Use `browser-use state` to inspect page elements
+   - Use `browser-use click <index>` to test user interactions
+   - Use `browser-use screenshot <path>` to capture visual evidence
+   - Use `browser-use eval "console.log(...)"` to check for console errors
+   - Document findings with screenshots
 3. If issues found:
    - Document with screenshots
    - Fix issues
-   - Re-verify
+   - Re-verify using browser-use
 4. If no UI changes, skip this phase
+5. Always clean up: `browser-use close` when done
 
-**Output**: Verified UI functionality with evidence
+**Browser-use Quick Reference**:
+
+```bash
+browser-use open https://localhost:3000        # Navigate to app
+browser-use state                              # Get clickable elements
+browser-use click <index>                      # Click element by index
+browser-use input <index> "text"               # Type into element
+browser-use screenshot ui-verification.png     # Save screenshot
+browser-use close                              # Clean up
+```
+
+**Output**: Verified UI functionality with evidence (screenshots)
 
 **Phase 7 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 7"
 echo "ENTERING_PHASE: 8"
@@ -435,6 +457,7 @@ echo "ENTERING_PHASE: 8"
 **Output**: Open pull request ready for human review
 
 **Phase 8 Exit**:
+
 ```bash
 echo "PHASE_COMPLETE: 8"
 echo "ENTERING_PHASE: 9"
@@ -553,6 +576,7 @@ Ready for re-review."
 **Output**: PR with all medium+ feedback addressed, tests passing, ready for merge
 
 **Phase 9-10 Exit** (when PR is approved or merged):
+
 ```bash
 echo "PHASE_COMPLETE: 9"
 echo "PHASE_COMPLETE: 10"
