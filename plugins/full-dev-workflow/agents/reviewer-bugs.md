@@ -41,6 +41,8 @@ Find bugs that will cause runtime errors, incorrect behavior, or data corruption
    - Missing breaks in switches
    - Wrong operators (== vs ===, && vs ||)
    - Integer overflow/underflow
+   - Early returns that bypass important checks
+   - Incorrect order of operations (e.g., auto-allow before deny check)
 
 2. **Null/Undefined Handling**
    - Missing null checks
