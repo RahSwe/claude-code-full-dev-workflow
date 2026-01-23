@@ -471,40 +471,56 @@ echo "ENTERING_PHASE: 9"
 
 **IMPORTANT**: This phase runs as an autonomous loop - no user input required. The loop continues until no medium or higher severity suggestions remain.
 
+**CRITICAL**: Fetch ALL review comments SHORTLY after pushing. Automated bots (Codex, Greptile, etc.) post comments within 10-30 seconds of a push - do NOT wait for CI checks to complete before fetching reviews.
+
 **Loop Structure**:
 
 ```text
 WHILE (has_medium_or_higher_suggestions):
-    1. Fetch PR reviews and comments
-    2. Categorize by severity
-    3. If medium+ suggestions exist: fix and push
-    4. Wait for new reviews
+    1. Fetch ALL PR reviews and comments (don't wait for CI)
+    2. Categorize by severity (prioritize bot reviews with file/line refs)
+    3. If suggestions exist: review if the suggestions are valid, fix valid suggestions and push
+    4. Wait approxmately two minutes for follow-up reviews (NOT for CI checks)
     5. Repeat
 ```
 
 **Actions per iteration**:
 
-### Step 1: Fetch PR Feedback
+### Step 1: Fetch PR Feedback (IMMEDIATELY after push)
 
 ```bash
-# Get PR comments and reviews
-gh pr view --comments
-gh pr view --json reviews,comments,reviewDecision
+# Get human and bot reviews (approval status, review bodies)
+gh pr view --json reviews,reviewDecision
+
+# CRITICAL: Get inline code comments - this is where Codex/Greptile post findings
 gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
+
+# Get general discussion comments
+gh pr view --comments
 ```
+
+**Bot Review Priority Indicators**:
+
+- **P1 (Critical)**: Bot comments with specific file:line references and security/bug keywords
+- **P2 (High)**: Bot comments suggesting code changes with diff snippets
+- **P3 (Medium)**: Bot comments with general suggestions
+- **P4 (Low)**: Bot comments that are informational only
 
 ### Step 2: Categorize Feedback by Severity
 
 - **Critical (must fix)**:
   - "Changes requested" review status
   - Security vulnerabilities
+  - Permission/authorization bypass issues
   - Breaking bugs
   - Blocking issues explicitly marked
+  - Bot reviews with specific file/line references flagging security or logic errors
 - **Medium (should fix)**:
   - Code quality suggestions
   - Performance concerns
   - Missing error handling
   - Suggestions from senior reviewers
+  - Bot reviews suggesting code changes with diff snippets
 - **Low (optional)**:
   - Style preferences
   - Minor nitpicks
@@ -515,7 +531,7 @@ gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
 
 1. For each Critical issue:
    - Read the specific file and line referenced
-   - Implement the requested change
+   - Implement the requested change if it is valid
    - Run tests to verify no regression
    - Mark as addressed
 2. For each Medium issue:
@@ -525,7 +541,7 @@ gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
    - Mark as addressed
 3. For Low issues:
    - Reply explaining decision (fix or skip)
-   - No code changes required
+   - No code changes required but implement if valuable
 
 ### Step 4: Push Updates
 
@@ -548,12 +564,28 @@ gh pr comment --body "Addressed review feedback:
 Ready for re-review."
 ```
 
-### Step 6: Wait and Check Again
+### Step 6: Poll for New Reviews (Active Polling)
 
-- Wait 30 seconds
-- Fetch new reviews/comments
+**Polling Strategy**:
+
+- **First iteration**: Fetch reviews IMMEDIATELY after push (bots respond in 10-30 seconds)
+- **After fix push**: Wait approximately two minutes, then fetch again
+- **Do NOT wait for CI checks** - bot reviews are independent of CI status
+
+```bash
+# Wait briefly for bot reviews (NOT for CI)
+sleep 15
+
+# Fetch all review types again
+gh pr view --json reviews,reviewDecision
+gh api repos/{owner}/{repo}/pulls/{pr_number}/comments
+gh pr view --comments
+```
+
 - If new medium+ suggestions: continue loop
 - If only low/no suggestions: exit loop
+
+**WARNING**: Do NOT use "all CI checks passing" as an exit condition. Exit when there are no unresolved medium+ severity suggestions, regardless of CI status.
 
 **Exit Conditions** (loop stops when ANY is true):
 

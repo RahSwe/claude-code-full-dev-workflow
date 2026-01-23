@@ -66,6 +66,9 @@ Identify security vulnerabilities that could lead to:
    - Direct object references
    - Path traversal vulnerabilities
    - CORS misconfigurations
+   - Permission bypass via early returns (auto-allow before deny check)
+   - Authorization checks that can be circumvented by code flow
+   - Default-allow patterns that don't respect explicit denies
 
 6. **Security Misconfiguration**
    - Debug mode in production
