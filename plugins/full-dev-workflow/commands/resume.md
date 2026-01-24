@@ -90,7 +90,7 @@ Create a todo list with remaining phases:
 Phase 0: Plan Mode - [completed/current/pending]
 Phase 1: Code Mapping - [completed/current/pending]
 Phase 2: Test Creation - [completed/current/pending]
-Phase 3: Ralph Loop Implementation - [completed/current/pending]
+Phase 3: Implementation (Tasks) - [completed/current/pending]
 Phase 4: Multi-Agent Code Review - [completed/current/pending]
 Phase 5: Automatic Fixes - [completed/current/pending]
 Phase 6: Code Simplification - [completed/current/pending]
@@ -138,11 +138,14 @@ Based on user choice, continue with the appropriate phase from the full-dev work
 - Check what test files exist
 - Continue writing remaining tests
 
-**Phase 3 (Ralph Loop)**:
+**Phase 3 (Implementation - Tasks)**:
 
-- Check if `.claude/ralph-loop.local.md` exists
-- If yes, Ralph loop can continue automatically
-- If no, restart Ralph loop with appropriate prompt
+- Use TaskList to inspect the current task breakdown and parallel groups
+- Check which groups have completed and which tasks are pending/in-progress
+- If mid-group: continue launching sub-agents for remaining tasks in the current group
+- If between groups: proceed to the next group's parallel tasks
+- If tests are still failing: analyze which tasks need adjustment and re-run
+- If task structure is missing or inconsistent: re-plan the implementation following the task breakdown steps from Phase 3
 
 **Phase 4 (Code Review)**:
 

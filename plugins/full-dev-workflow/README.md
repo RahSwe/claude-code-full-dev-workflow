@@ -62,6 +62,39 @@ This plugin includes specialized agents for each workflow phase:
 | `full-dev-workflow:reviewer-security`    | 4     | OWASP Top 10 security review                |
 | `full-dev-workflow:reviewer-performance` | 4     | Performance and scalability analysis        |
 
+## Phase 3 Implementation (Tasks)
+
+Phase 3 uses Claude Code's native Task and TodoWrite tools with a **parallel sub-agent execution strategy**:
+
+### Task Planning
+
+1. **Break down the feature** into discrete implementation tasks
+2. **Identify dependencies** between tasks
+3. **Organize into parallel groups** based on the dependency graph
+
+### Parallel Execution
+
+Tasks are organized into groups that can run concurrently:
+
+```text
+Group 1 (parallel): Schema changes, utilities, config
+    ↓
+Group 2 (parallel): Backend services, API endpoints
+    ↓
+Group 3 (parallel): Frontend components, data fetching
+    ↓
+Group 4 (sequential): Final integration
+```
+
+### Sub-Agent Orchestration
+
+- Each task in a group is assigned to a sub-agent via the Task tool
+- Sub-agents run in parallel within their group
+- Integration tests run after each group completes
+- The workflow progresses group-by-group until all tests pass
+
+This approach maximizes parallelism while respecting dependencies, reducing total implementation time for complex features.
+
 ## Hooks
 
 ### Stop Hook (`stop-hook.sh`)
@@ -78,7 +111,7 @@ This plugin includes specialized agents for each workflow phase:
 **Example warning**:
 
 ```text
-[CRITICAL] Full-dev workflow 'Add auth feature' - Phase 3 (Ralph Loop Implementation) incomplete.
+[CRITICAL] Full-dev workflow 'Add auth feature' - Phase 3 (Implementation - Tasks) incomplete.
 Progress saved to .claude/full-dev.local.md. Use /full-dev-workflow:resume to continue.
 ```
 
@@ -184,7 +217,7 @@ This ensures the workflow remains flexible while providing helpful guidance.
 | 0     | Plan Mode                 |
 | 1     | Code Mapping              |
 | 2     | Test Creation             |
-| 3     | Ralph Loop Implementation |
+| 3     | Implementation (Tasks)    |
 | 4     | Multi-Agent Code Review   |
 | 5     | Automatic Fixes           |
 | 6     | Code Simplification       |
