@@ -1,5 +1,5 @@
 ---
-description: Complete feature development workflow with code mapping, TDD, Ralph loop, multi-agent review, UI verification, and PR management
+description: Complete feature development workflow with code mapping, TDD, task-based implementation, multi-agent review, UI verification, and PR management
 argument-hint: "<feature description>"
 allowed-tools: Bash(gh:*), Bash(git:*), Bash(npm:*), Bash(npx:*), Bash(yarn:*), Bash(pnpm:*), Read, Write, Edit, Glob, Grep, Task, TodoWrite, EnterPlanMode, ExitPlanMode
 ---
@@ -74,7 +74,7 @@ Update the state file:
 
 - **Phase 0**: Set `plan_file`, wait for `user_approved_plan: true` (detected by hook)
 - **Phase 2**: Update `test_status: failing` after running initial tests
-- **Phase 3**: Update `test_status: passing` when Ralph completes
+- **Phase 3**: Update `test_status: passing` when the implementation Task completes
 - **Phase 4**: Update `review_agents_completed` and `review_issues_found`
 - **Phase 6**: Read `modified_files` for code simplifier input
 - **Phase 8**: Set `pr_url` after PR creation
@@ -219,35 +219,147 @@ echo "ENTERING_PHASE: 3"
 
 ---
 
-## Phase 3: Ralph Loop Implementation
+## Phase 3: Implementation (Tasks)
 
-**Goal**: Implement feature iteratively until all tests pass
+**Goal**: Implement the feature iteratively using Claude Code Tasks until all tests pass
 
 **Actions**:
 
-1. Prepare Ralph loop prompt with clear completion criteria:
+### Step 1: Update Implementation Plan from Code Mapping
+
+Before planning tasks, synthesize the findings from Phase 1 (Code Mapping) and Phase 2 (Test Creation):
+
+1. **Review Phase 1 code mapping results**:
+   - Affected files and their dependencies
+   - Existing patterns and conventions to follow
+   - Integration points identified
+   - Similar implementations to reference
+
+2. **Review Phase 2 test structure**:
+   - Which tests exist and what they cover
+   - Test file organization and naming
+   - Current test status (all should be failing per TDD)
+
+3. **Update the implementation plan** in the plan file (`.claude/plans/`):
+   - Refine the list of files to create/modify based on actual codebase findings
+   - Note specific patterns to follow from similar existing code
+   - Identify any new dependencies or constraints discovered
+   - Ensure the plan aligns with the test structure
+
+### Step 2: Plan Implementation Tasks
+
+Based on the updated plan, break the feature into discrete implementation tasks:
+
+1. **Identify independent work units**:
+   - Database/schema changes (if any)
+   - Backend API endpoints or services
+   - Frontend components or pages
+   - Utility functions or shared logic
+   - Configuration or environment changes
+
+2. **Create a task list using TodoWrite** for each work unit:
+   - Each task should be small enough for a sub-agent to complete independently
+   - Include clear acceptance criteria (which tests should pass)
+   - Reference specific files to modify from Phase 1 findings
+
+3. **Identify task dependencies in the plan file and TodoWrite list**:
+   - Mark tasks that depend on others (e.g., API endpoint depends on schema)
+   - Note dependencies in the plan file and add a short "blocked by: Task X" note in the TodoWrite item text
+
+### Step 3: Organize Tasks into Parallel Groups
+
+Analyze the task dependency graph and organize into execution groups:
+
+```text
+GROUP 1 (run in parallel - no dependencies):
+  - Task A: Database schema changes
+  - Task B: Shared utility functions
+  - Task C: Configuration setup
+
+GROUP 2 (run in parallel - depends on Group 1):
+  - Task D: Backend service layer (blocked by A, B)
+  - Task E: API endpoint handlers (blocked by A, B)
+
+GROUP 3 (run in parallel - depends on Group 2):
+  - Task F: Frontend data fetching (blocked by E)
+  - Task G: Frontend components (blocked by B)
+
+GROUP 4 (final integration):
+  - Task H: Integration wiring (blocked by D, E, F, G)
+```
+
+### Step 4: Execute Tasks with Sub-Agents
+
+For each group, launch sub-agents in parallel using the Task tool:
+
+1. **Launch parallel sub-agents** for all tasks in the current group:
 
    ```text
-   Implement [feature] following TDD:
-   - Read existing code patterns from Phase 1
-   - Implement minimum code to make ONE test pass
-   - Run tests after each change
-   - Iterate until ALL tests pass
-   - Follow project conventions strictly
-   - Include ALL_TESTS_PASS and EXIT_SIGNAL: true when complete
+   Use the Task tool with subagent_type appropriate for each task:
+   - subagent_type="general-purpose" for implementation tasks
+   - Each sub-agent receives: task description, files to modify, tests to target
    ```
 
-2. Start Ralph loop: `/full-dev-workflow:ralph "<prompt>" --completion-promise "ALL_TESTS_PASS" --max-iterations 30 --timeout 60`
-3. Ralph will iterate with:
-   - **Dual-condition exit gate**: Requires both completion signal AND EXIT_SIGNAL: true
-   - **Circuit breaker**: Stops on 3 consecutive real errors
-   - **Rate limiting**: 100 API calls/hour (prevents runaway loops)
-   - **Session continuity**: Preserves context across interruptions
-4. If max iterations reached without success:
-   - Document what's blocking progress
-   - Ask user for guidance
+2. **Sub-agent instructions** (include in each Task prompt):
 
-**Output**: Working implementation with passing tests
+   ```text
+   Implement [specific task] following TDD:
+   - Read the target files first
+   - Make minimal changes to pass the specified tests
+   - Run tests after each change to verify progress
+   - Follow project conventions strictly
+   - When your assigned tests pass, report: TASK_COMPLETE
+   - If blocked, clearly describe the blocker
+   ```
+
+3. **Wait for group completion** before proceeding to next group
+
+4. **Run integration tests** after each group completes to catch issues early
+
+### Step 5: Monitor and Adjust
+
+1. **Track progress** using TodoWrite:
+   - Mark tasks as `in_progress` when sub-agents start
+   - Mark as `completed` when sub-agents succeed
+   - Note any blockers discovered during execution
+
+2. **Handle failures**:
+   - If a sub-agent reports a blocker, analyze and adjust the plan
+   - Re-run failed tasks with additional context
+   - Split complex tasks into smaller pieces if needed
+
+3. **Run full test suite** after all groups complete
+
+### Step 6: Confirm Completion
+
+When all tasks complete and tests pass:
+
+1. Run the complete test suite one final time
+2. Verify ALL_TESTS_PASS
+3. Summarize the implementation work done by each sub-agent
+
+**Output**: Working implementation with passing tests, tracked via Tasks/TodoWrite
+
+**Example Task Breakdown**:
+
+For a feature "Add user profile page with avatar upload":
+
+```text
+Group 1 (parallel):
+  - Task: Add avatar_url column to users table
+  - Task: Create image upload utility function
+
+Group 2 (parallel, after Group 1):
+  - Task: Implement /api/users/:id/avatar endpoint
+  - Task: Implement /api/users/:id/profile endpoint
+
+Group 3 (parallel, after Group 2):
+  - Task: Create ProfilePage component
+  - Task: Create AvatarUpload component
+
+Group 4 (sequential, after Group 3):
+  - Task: Wire up ProfilePage with data fetching and avatar upload
+```
 
 **Phase 3 Exit**:
 

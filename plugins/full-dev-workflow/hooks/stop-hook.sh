@@ -14,7 +14,7 @@ get_phase_name() {
     0) echo "Plan Mode" ;;
     1) echo "Code Mapping" ;;
     2) echo "Test Creation" ;;
-    3) echo "Ralph Loop Implementation" ;;
+    3) echo "Implementation (Tasks)" ;;
     4) echo "Multi-Agent Code Review" ;;
     5) echo "Automatic Fixes" ;;
     6) echo "Code Simplification" ;;
